@@ -8,17 +8,20 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
-public class HabrCareerParse {
+public class HabrCareerParse  {
 
     private static final String SOURCE_LINK = "https://career.habr.com";
 
     private static final String PAGE_LINK = String.format("%s/vacancies/java_developer", SOURCE_LINK);
 
-    private String retrieveDescription(String link) throws IOException {
-        Connection connection = Jsoup.connect(link);
-        Document document = connection.get();
-        Element element = document.select("meta").get(2);
-        return element.attr("content");
+    private static String retrieveDescription(String link) {
+        String result;
+        try {
+            result = Jsoup.connect(link).get().select("meta").get(2).attr("content");
+        } catch (IOException e) {
+            throw new IllegalArgumentException();
+        }
+        return result;
     }
 
     public static void main(String[] args) throws IOException {
@@ -35,7 +38,8 @@ public class HabrCareerParse {
                 String vacancyName = titleElement.text();
                 String link = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
                 String date = dateElement.attr("datetime");
-                System.out.printf("%s %s %s%n", vacancyName, link, date);
+                String description = retrieveDescription(link);
+                System.out.printf("%s %s %s%n %s%n", vacancyName, link, date, description);
             });
         }
     }
