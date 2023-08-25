@@ -15,6 +15,7 @@ import java.util.List;
 public class HabrCareerParse implements Parse {
 
     private final DateTimeParser dateTimeParser;
+    private final int pages = 5;
 
     public HabrCareerParse(DateTimeParser dateTimeParser) {
         this.dateTimeParser = dateTimeParser;
@@ -33,7 +34,7 @@ public class HabrCareerParse implements Parse {
     @Override
     public List<Post> list(String link) throws IOException {
         List<Post> result = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= pages; i++) {
             String pages = String.format("%s?page=%s", link, i);
             Connection connection = Jsoup.connect(pages);
             Document document = connection.get();
